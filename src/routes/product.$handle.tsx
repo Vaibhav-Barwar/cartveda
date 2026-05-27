@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Loader2, ShoppingBag, Heart, Truck, ShieldCheck, RefreshCw, ChevronLeft } from "lucide-react";

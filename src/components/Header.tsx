@@ -49,11 +49,13 @@ export function Header() {
       )}
     >
       <div className="container-page flex items-center gap-3 md:gap-6 h-16">
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground grid place-items-center">
-            <Dumbbell className="h-4 w-4" />
+        <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
+          <div className="relative h-9 w-9 rounded-xl bg-primary text-primary-foreground grid place-items-center shadow-[0_0_20px_-4px_color-mix(in_oklab,var(--color-primary)_70%,transparent)] transition-transform group-hover:scale-105">
+            <Dumbbell className="h-5 w-5" strokeWidth={2.5} />
           </div>
-          <span className="font-display text-xl font-bold tracking-tight">Cartveda</span>
+          <span className="font-display text-xl font-extrabold tracking-tight">
+            Cart<span className="text-primary">veda</span>
+          </span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1 text-sm">

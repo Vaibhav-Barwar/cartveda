@@ -1,10 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Truck, ShieldCheck, RefreshCw, Lock, Star, Sparkles, Dumbbell, ChevronDown } from "lucide-react";
+import { ArrowRight, Truck, ShieldCheck, RefreshCw, Lock, Star, Sparkles, Zap, Flame, Package } from "lucide-react";
 import { fetchProducts } from "@/lib/shopify";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
+import resistanceImg from "@/assets/resistance-bands.jpg";
+import gripImg from "@/assets/grip-strengthener.jpg";
+import yogaImg from "@/assets/yoga-mat.jpg";
+import skipImg from "@/assets/skipping-rope.jpg";
+import glovesImg from "@/assets/gym-gloves.jpg";
+import tummyImg from "@/assets/tummy-trimmer.jpg";
+import abImg from "@/assets/ab-roller.jpg";
+import shakerImg from "@/assets/shaker-bottle.jpg";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -17,14 +26,14 @@ export const Route = createFileRoute("/")({
 });
 
 const categories = [
-  { name: "Resistance Bands", q: "resistance" },
-  { name: "Grip Strengtheners", q: "grip" },
-  { name: "Yoga Mats", q: "yoga" },
-  { name: "Skipping Ropes", q: "skipping" },
-  { name: "Gym Gloves", q: "gloves" },
-  { name: "Tummy Trimmers", q: "tummy" },
-  { name: "Ab Rollers", q: "ab roller" },
-  { name: "Shaker Bottles", q: "shaker" },
+  { name: "Resistance Bands", q: "resistance", img: resistanceImg },
+  { name: "Grip Strengtheners", q: "grip", img: gripImg },
+  { name: "Yoga Mats", q: "yoga", img: yogaImg },
+  { name: "Skipping Ropes", q: "skipping", img: skipImg },
+  { name: "Gym Gloves", q: "gloves", img: glovesImg },
+  { name: "Tummy Trimmers", q: "tummy", img: tummyImg },
+  { name: "Ab Rollers", q: "ab roller", img: abImg },
+  { name: "Shaker Bottles", q: "shaker", img: shakerImg },
 ];
 
 const reasons = [
@@ -68,7 +77,7 @@ function Index() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/products">
-                <Button size="lg" className="rounded-full px-7 h-12 text-base font-semibold">
+                <Button size="lg" className="rounded-full px-7 h-12 text-base font-semibold shadow-[0_0_30px_-6px_color-mix(in_oklab,var(--color-primary)_60%,transparent)]">
                   Shop Now <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
@@ -88,43 +97,16 @@ function Index() {
         </div>
       </section>
 
-      {/* CATEGORIES */}
-      <section className="container-page py-16 md:py-20">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Shop by category</h2>
-            <p className="mt-2 text-muted-foreground">Find the gear that matches your training.</p>
-          </div>
-          <Link to="/products" className="hidden sm:inline-flex text-sm text-muted-foreground hover:text-primary">
-            View all →
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          {categories.map((c) => (
-            <Link
-              key={c.name}
-              to="/search"
-              search={{ q: c.q }}
-              className="group relative aspect-[4/3] rounded-2xl overflow-hidden border border-border bg-gradient-to-br from-surface to-background hover:border-primary/50 transition-all p-5 flex flex-col justify-between"
-            >
-              <Dumbbell className="h-6 w-6 text-primary opacity-80 group-hover:scale-110 transition" />
-              <div>
-                <h3 className="text-base md:text-lg font-semibold leading-tight">{c.name}</h3>
-                <p className="text-xs text-muted-foreground mt-1 group-hover:text-primary">Shop now →</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
       {/* BEST SELLERS */}
       <section id="bestsellers" className="container-page py-16 md:py-20">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <span className="inline-block text-xs uppercase tracking-widest text-primary mb-2">Best Sellers</span>
+            <span className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-primary mb-2">
+              <Flame className="h-3.5 w-3.5" /> Best Sellers
+            </span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Trained & tested favourites</h2>
           </div>
-          <Link to="/products" className="hidden sm:inline-flex text-sm text-muted-foreground hover:text-primary">
+          <Link to="/products" className="hidden sm:inline-flex text-sm text-muted-foreground hover:text-primary transition">
             View all →
           </Link>
         </div>
@@ -146,30 +128,78 @@ function Index() {
         )}
       </section>
 
-      {/* BUNDLE OFFER */}
+      {/* CATEGORIES with images */}
+      <section className="container-page py-16 md:py-20">
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <span className="inline-block text-xs uppercase tracking-widest text-primary mb-2">Categories</span>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Shop by category</h2>
+            <p className="mt-2 text-muted-foreground">Find the gear that matches your training.</p>
+          </div>
+          <Link to="/products" className="hidden sm:inline-flex text-sm text-muted-foreground hover:text-primary">
+            View all →
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          {categories.map((c) => (
+            <Link
+              key={c.name}
+              to="/search"
+              search={{ q: c.q }}
+              className="group relative aspect-square rounded-2xl overflow-hidden border border-border bg-surface hover:border-primary/60 transition-all duration-300 hover:-translate-y-1"
+            >
+              <img
+                src={c.img}
+                alt={c.name}
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover opacity-70 transition-all duration-500 group-hover:opacity-90 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-4">
+                <h3 className="text-base md:text-lg font-semibold leading-tight">{c.name}</h3>
+                <p className="text-xs text-primary mt-1 opacity-0 group-hover:opacity-100 transition">Shop now →</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* FITNESS BUNDLE */}
       <section className="container-page py-10">
-        <div className="rounded-3xl bg-gradient-to-br from-primary/15 via-surface to-background border border-primary/20 p-8 md:p-14 grid lg:grid-cols-2 gap-10 items-center overflow-hidden relative">
-          <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-primary/20 blur-3xl" aria-hidden />
+        <div className="rounded-3xl bg-gradient-to-br from-primary/20 via-surface to-background border border-primary/30 p-8 md:p-14 grid lg:grid-cols-2 gap-10 items-center overflow-hidden relative">
+          <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-primary/30 blur-3xl" aria-hidden />
+          <div className="absolute -bottom-32 -left-20 h-72 w-72 rounded-full bg-primary/10 blur-3xl" aria-hidden />
           <div className="relative">
-            <span className="text-xs uppercase tracking-widest text-primary font-semibold">Fitness Bundle</span>
+            <span className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-primary font-semibold">
+              <Package className="h-3.5 w-3.5" /> Fitness Bundle
+            </span>
             <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-tight">
               Save up to 30% on starter bundles.
             </h2>
             <p className="mt-4 text-muted-foreground max-w-lg">
-              Get everything you need to start strong — mats, bands, gloves and a shaker — packed into one box.
+              Get everything you need to start strong — mats, bands, gloves and a shaker — packed into one premium box.
             </p>
+            <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
+              <li className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Hand-picked essentials</li>
+              <li className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Flat 30% bundle discount</li>
+              <li className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Free shipping included</li>
+            </ul>
             <div className="mt-6 flex gap-3">
               <Link to="/search" search={{ q: "bundle" }}>
                 <Button size="lg" className="rounded-full">Shop Bundles</Button>
               </Link>
+              <Link to="/products">
+                <Button size="lg" variant="outline" className="rounded-full bg-surface/40">View all gear</Button>
+              </Link>
             </div>
           </div>
           <div className="relative grid grid-cols-2 gap-3">
-            {products.slice(0, 4).map((p) => (
-              <div key={p.node.id} className="aspect-square rounded-xl overflow-hidden bg-muted border border-border">
-                {p.node.images.edges[0] && (
-                  <img src={p.node.images.edges[0].node.url} alt={p.node.title} className="w-full h-full object-cover" />
-                )}
+            {[resistanceImg, glovesImg, yogaImg, shakerImg].map((src, i) => (
+              <div
+                key={i}
+                className="aspect-square rounded-2xl overflow-hidden bg-muted border border-border hover:border-primary/60 hover:-translate-y-1 transition-all duration-300"
+              >
+                <img src={src} alt="Bundle item" loading="lazy" className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
               </div>
             ))}
           </div>
@@ -184,7 +214,10 @@ function Index() {
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {reasons.map((r) => (
-            <div key={r.title} className="p-6 rounded-2xl bg-surface border border-border">
+            <div
+              key={r.title}
+              className="p-6 rounded-2xl bg-surface border border-border hover:border-primary/40 hover:-translate-y-1 transition-all duration-300"
+            >
               <div className="h-10 w-10 rounded-lg bg-primary/15 grid place-items-center text-primary mb-4">
                 <r.icon className="h-5 w-5" />
               </div>
@@ -205,7 +238,7 @@ function Index() {
         </div>
         <div className="grid md:grid-cols-3 gap-4">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="p-6 rounded-2xl border border-dashed border-border bg-surface/40">
+            <div key={i} className="p-6 rounded-2xl border border-dashed border-border bg-surface/40 hover:border-primary/40 transition-colors">
               <div className="flex gap-0.5 mb-3 text-muted-foreground">
                 {Array.from({ length: 5 }).map((_, j) => <Star key={j} className="h-4 w-4" />)}
               </div>

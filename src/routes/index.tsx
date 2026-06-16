@@ -1,400 +1,321 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Truck, ShieldCheck, RefreshCw, Lock, Star, Sparkles, Zap, Flame, Package, Instagram, Quote } from "lucide-react";
-import { fetchProducts } from "@/lib/shopify";
+import { ArrowRight, Truck, ShieldCheck, RefreshCw, Lock, Star, Instagram, Quote } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useAllProducts, useBestSellers, useFeaturedProducts, useNewArrivals } from "@/hooks/useProducts";
+import { categories } from "@/data/categories";
+import { testimonials, faqs } from "@/data/testimonials";
 
 import heroBg from "@/assets/hero-bg.jpg";
-import resistanceImg from "@/assets/resistance-bands.jpg";
-import gripImg from "@/assets/grip-strengthener.jpg";
-import yogaImg from "@/assets/yoga-mat.jpg";
-import skipImg from "@/assets/skipping-rope.jpg";
-import glovesImg from "@/assets/gym-gloves.jpg";
-import tummyImg from "@/assets/tummy-trimmer.jpg";
-import abImg from "@/assets/ab-roller.jpg";
-import shakerImg from "@/assets/shaker-bottle.jpg";
 import life1 from "@/assets/life-1.jpg";
 import life2 from "@/assets/life-2.jpg";
 import life3 from "@/assets/life-3.jpg";
 import life4 from "@/assets/life-4.jpg";
 import life5 from "@/assets/life-5.jpg";
 import life6 from "@/assets/life-6.jpg";
+import resistanceImg from "@/assets/resistance-bands.jpg";
+import gripImg from "@/assets/grip-strengthener.jpg";
 
 export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Cartveda — Everything Fitness. One Cart." },
-      { name: "description", content: "Premium fitness essentials made for India. Resistance bands, yoga mats, ab rollers, shakers and curated bundles — built for athletes who don't compromise." },
+      { title: "Cartveda — Train Better. Perform Every Day." },
+      { name: "description", content: "Premium fitness essentials for the everyday athlete. Resistance bands, yoga mats, gloves, shakers and more." },
     ],
   }),
 });
 
-const categories = [
-  { name: "Resistance Bands", q: "resistance", img: resistanceImg },
-  { name: "Grip Strengtheners", q: "grip", img: gripImg },
-  { name: "Yoga Mats", q: "yoga", img: yogaImg },
-  { name: "Skipping Ropes", q: "skipping", img: skipImg },
-  { name: "Gym Gloves", q: "gloves", img: glovesImg },
-  { name: "Tummy Trimmers", q: "tummy", img: tummyImg },
-  { name: "Ab Rollers", q: "ab roller", img: abImg },
-  { name: "Shaker Bottles", q: "shaker", img: shakerImg },
-];
-
-const reasons = [
-  { icon: Truck, title: "Fast delivery", desc: "2–5 day shipping across India, free over ₹999." },
-  { icon: ShieldCheck, title: "Premium quality", desc: "Tested gear from trusted Indian manufacturers." },
-  { icon: RefreshCw, title: "Easy returns", desc: "7-day no-questions-asked return policy." },
-  { icon: Lock, title: "Secure payments", desc: "UPI, cards & netbanking via Shopify Checkout." },
-];
-
-const faqs = [
-  { q: "Where do you ship?", a: "We ship across India with 2–5 day delivery to most cities." },
-  { q: "What is your return policy?", a: "Unused products can be returned within 7 days of delivery for a full refund." },
-  { q: "Are your products beginner-friendly?", a: "Yes — every product is curated for both beginners and seasoned fitness enthusiasts." },
-  { q: "Do you offer bundles or discounts?", a: "Yes, our Fitness Bundles combine top-rated essentials at a discounted price." },
-  { q: "How can I track my order?", a: "Once shipped, you'll get a tracking link via email and SMS." },
-];
-
 const lifestyle = [life1, life4, life2, life6, life3, life5];
 
-const transformations = [
-  {
-    name: "Aarav, 26 · Bengaluru",
-    body: "Started with the starter bundle six months ago. The resistance bands and ab roller became part of my daily routine — finally consistent for the first time.",
-    tag: "6 months · Strength",
-  },
-  {
-    name: "Priya, 31 · Mumbai",
-    body: "The yoga mat is genuinely premium. I cancelled my studio membership and built a home practice that actually sticks.",
-    tag: "4 months · Yoga",
-  },
-  {
-    name: "Rohit, 22 · Delhi",
-    body: "As a hostel student I needed something compact. The skipping rope + grip combo travels with me everywhere. Lost 8kg.",
-    tag: "5 months · Cardio",
-  },
+const perks = [
+  { icon: Truck, title: "Premium Quality", desc: "Tested gear built to last." },
+  { icon: ShieldCheck, title: "Fast Shipping", desc: "2–5 day delivery across India." },
+  { icon: RefreshCw, title: "Easy Returns", desc: "7-day no-questions returns." },
+  { icon: Lock, title: "Secure Payments", desc: "UPI, cards & netbanking." },
 ];
 
 function Index() {
-  const { data: products = [], isLoading } = useQuery({
-    queryKey: ["products", "home"],
-    queryFn: () => fetchProducts(12),
-  });
+  const { data: bestSellers = [] } = useBestSellers();
+  const { data: featured = [] } = useFeaturedProducts();
+  const { data: newArrivals = [] } = useNewArrivals();
+  const { data: allProducts = [] } = useAllProducts();
+
+  const resistance = allProducts.filter((p) => p.category === "resistance-bands");
+  const essentials = allProducts.filter((p) => ["gym-gloves", "shaker-bottles", "lifting-straps"].includes(p.category));
 
   return (
     <div>
       {/* HERO */}
-      <section className="relative overflow-hidden border-b border-border">
-        {/* Background image */}
-        <div className="absolute inset-0 -z-10">
-          <img
-            src={heroBg}
-            alt=""
-            aria-hidden
-            className="h-full w-full object-cover object-center animate-hero-pan"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/75 to-background" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
-        </div>
-        {/* Subtle drifting grid */}
-        <div className="absolute inset-0 -z-10 bg-hero-grid animate-grid-drift pointer-events-none" aria-hidden />
-        {/* Primary glow */}
-        <div className="absolute -top-40 left-1/3 -z-10 h-[420px] w-[420px] rounded-full bg-primary/20 blur-[120px] pointer-events-none" aria-hidden />
-
-        <div className="container-page py-24 md:py-36 lg:py-44 relative">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs text-primary font-medium backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5" />
-              New drops every week
+      <section className="relative overflow-hidden bg-surface">
+        <div className="container-page grid lg:grid-cols-2 items-center gap-12 py-16 md:py-24 lg:py-28">
+          <div className="max-w-xl">
+            <span className="inline-block text-xs uppercase tracking-[0.2em] font-semibold text-muted-foreground mb-5">
+              New Season Drop
             </span>
-            <h1 className="mt-7 text-display text-5xl md:text-7xl lg:text-[5.5rem] leading-[0.92]">
-              Everything Fitness.<br />
-              <span className="text-gradient">One Cart.</span>
+            <h1 className="text-display text-5xl md:text-6xl lg:text-7xl leading-[0.95]">
+              Train Better.<br />Perform Every Day.
             </h1>
-            <p className="mt-7 text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
-              Premium fitness essentials engineered for your everyday journey — built for gym beginners,
-              athletes and busy professionals who refuse to compromise on quality.
+            <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+              Premium fitness gear engineered for the everyday grind — built for athletes, students and professionals who refuse to compromise on quality.
             </p>
-            <div className="mt-12 flex flex-wrap gap-3">
+            <div className="mt-10 flex flex-wrap gap-3">
               <Link to="/products">
-                <Button size="lg" className="rounded-full px-8 h-12 text-base font-semibold shadow-[0_0_40px_-8px_color-mix(in_oklab,var(--color-primary)_70%,transparent)]">
+                <Button size="lg" className="rounded-full px-8 h-12 text-base font-medium">
                   Shop Now <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
-              <a href="#bestsellers">
-                <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-base border-border bg-background/40 backdrop-blur">
-                  Explore Best Sellers
+              <Link to="/search" search={{ q: "bundle" }}>
+                <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-base border-foreground/20 bg-background">
+                  Explore Collections
                 </Button>
-              </a>
-            </div>
-
-            <div className="mt-14 flex flex-wrap gap-x-7 gap-y-3 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2"><Truck className="h-4 w-4 text-primary" /> Free shipping over ₹999</div>
-              <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Quality guaranteed</div>
-              <div className="flex items-center gap-2"><RefreshCw className="h-4 w-4 text-primary" /> 7-day returns</div>
+              </Link>
             </div>
           </div>
+          <div className="relative aspect-[4/5] lg:aspect-square rounded-2xl overflow-hidden">
+            <img src={heroBg} alt="Athlete training" className="h-full w-full object-cover" />
+          </div>
         </div>
       </section>
 
-      {/* BEST SELLERS */}
-      <section id="bestsellers" className="container-page py-16 md:py-24">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <span className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
-              <Flame className="h-3.5 w-3.5" /> Best Sellers
-            </span>
-            <h2 className="text-display text-3xl md:text-5xl">Trained & tested favourites</h2>
-          </div>
-          <Link to="/products" className="hidden sm:inline-flex text-sm text-muted-foreground hover:text-primary transition">
-            View all →
-          </Link>
-        </div>
-
-        {isLoading ? (
-          <Skeletons />
-        ) : products.length === 0 ? (
-          <EmptyProducts />
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
-            {products.slice(0, 8).map((p) => (
-              <ProductCard key={p.node.id} product={p} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* NEW ARRIVALS */}
-      <section className="container-page py-16 md:py-20 border-t border-border">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <span className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
-              <Sparkles className="h-3.5 w-3.5" /> New Arrivals
-            </span>
-            <h2 className="text-display text-3xl md:text-5xl">Fresh on the rack</h2>
-          </div>
-          <Link to="/products" className="hidden sm:inline-flex text-sm text-muted-foreground hover:text-primary transition">
-            View all →
-          </Link>
-        </div>
-        {isLoading ? (
-          <Skeletons />
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
-            {products.slice(-8).reverse().slice(0, 8).map((p) => (
-              <ProductCard key={`new-${p.node.id}`} product={p} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* CATEGORIES */}
-      <section className="container-page py-16 md:py-20 border-t border-border">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <span className="inline-block text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">Categories</span>
-            <h2 className="text-display text-3xl md:text-5xl">Shop by category</h2>
-          </div>
-          <Link to="/products" className="hidden sm:inline-flex text-sm text-muted-foreground hover:text-primary">
-            View all →
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      {/* SHOP BY CATEGORY */}
+      <Section title="Shop by Category" eyebrow="Explore">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
           {categories.map((c) => (
             <Link
-              key={c.name}
+              key={c.slug}
               to="/search"
-              search={{ q: c.q }}
-              className="group relative aspect-square rounded-2xl overflow-hidden border border-border bg-surface hover:border-primary/60 transition-all duration-500 hover:-translate-y-1"
+              search={{ q: c.name.toLowerCase() }}
+              className="group relative aspect-[3/4] rounded-xl overflow-hidden bg-surface"
             >
-              <img
-                src={c.img}
-                alt={c.name}
-                loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover opacity-70 transition-all duration-700 group-hover:opacity-90 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+              <img src={c.image} alt={c.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-4">
-                <h3 className="text-base md:text-lg font-semibold leading-tight">{c.name}</h3>
-                <p className="text-xs text-primary mt-1 opacity-0 group-hover:opacity-100 transition">Shop now →</p>
+                <h3 className="text-base md:text-lg font-semibold text-white leading-tight">{c.name}</h3>
               </div>
             </Link>
           ))}
         </div>
-      </section>
+      </Section>
 
-      {/* FITNESS BUNDLES */}
-      <section className="container-page py-16 md:py-20">
-        <div className="rounded-3xl bg-gradient-to-br from-primary/15 via-surface to-background border border-primary/25 p-8 md:p-14 grid lg:grid-cols-2 gap-10 items-center overflow-hidden relative">
-          <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-primary/25 blur-3xl" aria-hidden />
-          <div className="absolute -bottom-32 -left-20 h-72 w-72 rounded-full bg-primary/10 blur-3xl" aria-hidden />
-          <div className="relative">
-            <span className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] text-primary font-bold">
-              <Package className="h-3.5 w-3.5" /> Fitness Bundles
-            </span>
-            <h2 className="mt-4 text-display text-3xl md:text-5xl leading-[1.05]">
-              Save up to 30% <br/>on starter bundles
-            </h2>
-            <p className="mt-5 text-muted-foreground max-w-lg leading-relaxed">
-              Get everything you need to start strong — mats, bands, gloves and a shaker — packed into one premium box.
-            </p>
-            <ul className="mt-6 space-y-2.5 text-sm text-muted-foreground">
-              <li className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Hand-picked essentials</li>
-              <li className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Flat 30% bundle discount</li>
-              <li className="flex items-center gap-2"><Zap className="h-4 w-4 text-primary" /> Free shipping included</li>
-            </ul>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link to="/search" search={{ q: "bundle" }}>
-                <Button size="lg" className="rounded-full">Shop Bundles</Button>
-              </Link>
-              <Link to="/products">
-                <Button size="lg" variant="outline" className="rounded-full bg-surface/40">View all gear</Button>
-              </Link>
-            </div>
-          </div>
-          <div className="relative grid grid-cols-2 gap-3">
-            {[resistanceImg, glovesImg, yogaImg, shakerImg].map((src, i) => (
-              <div
-                key={i}
-                className="aspect-square rounded-2xl overflow-hidden bg-muted border border-border hover:border-primary/60 hover:-translate-y-1 transition-all duration-500"
-              >
-                <img src={src} alt="Bundle item" loading="lazy" className="w-full h-full object-cover hover:scale-110 transition-transform duration-700" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* BEST SELLERS */}
+      <Section title="Best Sellers" eyebrow="Loved by athletes" actionTo="/products" actionLabel="View all">
+        <Grid products={bestSellers} />
+      </Section>
 
-      {/* TRANSFORMATIONS / TESTIMONIALS */}
-      <section className="container-page py-16 md:py-24 border-t border-border">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="inline-block text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">Transformations</span>
-          <h2 className="text-display text-3xl md:text-5xl">Real journeys, real results</h2>
-          <p className="mt-4 text-muted-foreground">Stories shared by our community.</p>
-        </div>
+      {/* FEATURED */}
+      <Section title="Featured Products" eyebrow="Hand-picked" muted actionTo="/products" actionLabel="Shop all">
+        <Grid products={featured} />
+      </Section>
+
+      {/* RESISTANCE BANDS COLLECTION */}
+      <CollectionBanner
+        eyebrow="Collection"
+        title="Resistance Bands"
+        copy="Progressive tension for strength, mobility and rehab — train anywhere."
+        image={resistanceImg}
+        ctaSearch="resistance"
+      >
+        <Grid products={resistance} compact />
+      </CollectionBanner>
+
+      {/* GYM ESSENTIALS COLLECTION */}
+      <CollectionBanner
+        eyebrow="Collection"
+        title="Gym Essentials"
+        copy="Gloves, straps and shakers — the everyday gear you'll actually use."
+        image={gripImg}
+        ctaSearch="gloves"
+        flip
+        muted
+      >
+        <Grid products={essentials} compact />
+      </CollectionBanner>
+
+      {/* NEW ARRIVALS */}
+      <Section title="New Arrivals" eyebrow="Fresh in" actionTo="/products" actionLabel="View all">
+        <Grid products={newArrivals} />
+      </Section>
+
+      {/* TESTIMONIALS */}
+      <Section title="Trusted by everyday athletes" eyebrow="Reviews" muted>
         <div className="grid md:grid-cols-3 gap-4 md:gap-5">
-          {transformations.map((t) => (
-            <article
-              key={t.name}
-              className="relative p-7 rounded-2xl bg-surface border border-border hover:border-primary/50 hover:-translate-y-1 transition-all duration-500"
-            >
-              <Quote className="h-7 w-7 text-primary/60 mb-4" />
-              <p className="text-foreground leading-relaxed">"{t.body}"</p>
+          {testimonials.map((t) => (
+            <article key={t.id} className="p-7 rounded-2xl bg-background border border-border">
+              <Quote className="h-7 w-7 text-foreground/40 mb-4" />
+              <p className="text-foreground leading-relaxed">"{t.quote}"</p>
               <div className="mt-6 pt-5 border-t border-border flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold">{t.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{t.tag}</p>
+                  <p className="text-xs text-muted-foreground">{t.location}</p>
                 </div>
-                <div className="flex gap-0.5 text-primary">
-                  {Array.from({ length: 5 }).map((_, j) => <Star key={j} className="h-3.5 w-3.5 fill-current" />)}
+                <div className="flex gap-0.5">
+                  {Array.from({ length: t.rating }).map((_, j) => (
+                    <Star key={j} className="h-3.5 w-3.5 fill-foreground text-foreground" />
+                  ))}
                 </div>
               </div>
             </article>
           ))}
         </div>
+      </Section>
+
+      {/* FITNESS LIFESTYLE BANNER */}
+      <section className="container-page py-16 md:py-20">
+        <div className="relative rounded-2xl overflow-hidden aspect-[16/7] md:aspect-[16/6]">
+          <img src={heroBg} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+          <div className="relative h-full flex items-center px-8 md:px-16">
+            <div className="max-w-xl text-white">
+              <span className="text-xs uppercase tracking-[0.2em] font-semibold">Built for the daily grind</span>
+              <h2 className="text-display text-3xl md:text-5xl mt-3 leading-tight text-white">It's not about being the best. It's about being better than yesterday.</h2>
+              <Link to="/products" className="mt-6 inline-flex items-center gap-2 rounded-full bg-white text-foreground px-6 py-3 text-sm font-medium hover:bg-white/90 transition">
+                Shop the gear <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* INSTAGRAM / LIFESTYLE */}
-      <section className="py-16 md:py-20 border-t border-border">
-        <div className="container-page flex items-end justify-between mb-8">
-          <div>
-            <span className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
-              <Instagram className="h-3.5 w-3.5" /> @cartveda
-            </span>
-            <h2 className="text-display text-3xl md:text-5xl">Lived in. Tagged daily.</h2>
-            <p className="mt-3 text-muted-foreground">Tag <span className="text-primary">#cartveda</span> to be featured.</p>
-          </div>
-          <a href="#" className="hidden sm:inline-flex text-sm text-muted-foreground hover:text-primary">Follow →</a>
-        </div>
-        <div className="container-page grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3">
+      {/* INSTAGRAM GRID */}
+      <Section title="Lived in. Tagged daily." eyebrow={
+        <span className="inline-flex items-center gap-1.5"><Instagram className="h-3.5 w-3.5" /> @cartveda</span>
+      }>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3">
           {lifestyle.map((src, i) => (
-            <a
-              key={i}
-              href="#"
-              className="group relative aspect-square rounded-xl overflow-hidden bg-surface border border-border"
-            >
-              <img
-                src={src}
-                alt="Cartveda community"
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-[900ms] group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-background/0 group-hover:bg-background/40 transition-colors grid place-items-center">
-                <Instagram className="h-6 w-6 text-foreground opacity-0 group-hover:opacity-100 transition" />
+            <a key={i} href="#" className="group relative aspect-square rounded-xl overflow-hidden bg-surface">
+              <img src={src} alt="Community" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-colors grid place-items-center">
+                <Instagram className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition" />
               </div>
             </a>
           ))}
         </div>
-      </section>
+      </Section>
 
-      {/* WHY CHOOSE US */}
-      <section className="container-page py-16 md:py-20 border-t border-border">
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <h2 className="text-display text-3xl md:text-5xl">Why choose Cartveda</h2>
-          <p className="mt-3 text-muted-foreground">A premium experience from cart to first rep.</p>
-        </div>
+      {/* PERKS */}
+      <Section title="Why choose Cartveda" eyebrow="Promise" muted>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {reasons.map((r) => (
-            <div
-              key={r.title}
-              className="p-6 rounded-2xl bg-surface border border-border hover:border-primary/40 hover:-translate-y-1 transition-all duration-500"
-            >
-              <div className="h-11 w-11 rounded-xl bg-primary/15 grid place-items-center text-primary mb-4">
-                <r.icon className="h-5 w-5" />
+          {perks.map((p) => (
+            <div key={p.title} className="p-6 rounded-xl bg-background border border-border">
+              <div className="h-11 w-11 rounded-full bg-surface grid place-items-center mb-4">
+                <p.icon className="h-5 w-5" />
               </div>
-              <h3 className="font-semibold mb-1.5">{r.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{r.desc}</p>
+              <h3 className="font-semibold mb-1.5">{p.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
             </div>
           ))}
         </div>
-      </section>
+      </Section>
 
       {/* FAQ */}
       <section id="faq" className="container-page py-16 md:py-24 border-t border-border">
-        <div className="grid lg:grid-cols-2 gap-12">
-          <div>
-            <span className="inline-block text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">FAQ</span>
-            <h2 className="text-display text-3xl md:text-5xl leading-[1.05]">Got questions? <br/>We've got answers.</h2>
-            <p className="mt-5 text-muted-foreground max-w-md">
-              Can't find what you're looking for? <a className="text-primary hover:underline" href="#">Reach out to our team.</a>
-            </p>
+        <div className="grid lg:grid-cols-3 gap-12">
+          <div className="lg:col-span-1">
+            <span className="text-xs uppercase tracking-[0.2em] font-semibold text-muted-foreground">FAQ</span>
+            <h2 className="text-display text-3xl md:text-4xl mt-3">Got questions?</h2>
+            <p className="mt-4 text-muted-foreground">We've got answers. Can't find what you need? Reach out — we reply within 24 hours.</p>
           </div>
-          <Accordion type="single" collapsible className="w-full">
-            {faqs.map((f, i) => (
-              <AccordionItem key={i} value={`item-${i}`} className="border-border">
-                <AccordionTrigger className="text-left text-base font-semibold hover:no-underline">
-                  {f.q}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground leading-relaxed">{f.a}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <div className="lg:col-span-2">
+            <Accordion type="single" collapsible className="space-y-2">
+              {faqs.map((f) => (
+                <AccordionItem key={f.id} value={f.id} className="border border-border rounded-xl px-5 bg-background">
+                  <AccordionTrigger className="text-left font-medium hover:no-underline">{f.question}</AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed">{f.answer}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </div>
+      </section>
+
+      {/* NEWSLETTER */}
+      <section className="bg-foreground text-background">
+        <div className="container-page py-16 md:py-20 text-center max-w-2xl mx-auto">
+          <h2 className="text-display text-3xl md:text-5xl text-background">Join the movement.</h2>
+          <p className="mt-4 text-background/70">Drops, training tips and member-only discounts. Once a week. No noise.</p>
+          <form className="mt-8 flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+            <input
+              type="email"
+              placeholder="you@cartveda.in"
+              className="flex-1 h-12 px-5 rounded-full bg-background/10 border border-background/20 text-background placeholder:text-background/50 focus:outline-none focus:border-background"
+            />
+            <button type="submit" className="h-12 px-6 rounded-full bg-background text-foreground font-medium hover:opacity-90">
+              Subscribe
+            </button>
+          </form>
         </div>
       </section>
     </div>
   );
 }
 
-function Skeletons() {
+function Section({
+  title, eyebrow, children, actionTo, actionLabel, muted,
+}: {
+  title: string; eyebrow?: React.ReactNode; children: React.ReactNode;
+  actionTo?: string; actionLabel?: string; muted?: boolean;
+}) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="rounded-2xl bg-surface border border-border aspect-[3/4] animate-pulse" />
+    <section className={muted ? "bg-surface" : ""}>
+      <div className="container-page py-16 md:py-20">
+        <div className="flex items-end justify-between mb-10 gap-6">
+          <div>
+            {eyebrow && (
+              <span className="block text-xs uppercase tracking-[0.2em] font-semibold text-muted-foreground mb-3">{eyebrow}</span>
+            )}
+            <h2 className="text-display text-3xl md:text-4xl lg:text-5xl">{title}</h2>
+          </div>
+          {actionTo && actionLabel && (
+            <Link to={actionTo as any} className="hidden sm:inline-flex items-center text-sm font-medium hover:underline shrink-0">
+              {actionLabel} →
+            </Link>
+          )}
+        </div>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function Grid({ products, compact = false }: { products: any[]; compact?: boolean }) {
+  if (!products.length) {
+    return <div className="rounded-xl border border-dashed border-border p-10 text-center text-muted-foreground">No products yet.</div>;
+  }
+  return (
+    <div className={`grid grid-cols-2 ${compact ? "md:grid-cols-3" : "md:grid-cols-3 lg:grid-cols-4"} gap-4 md:gap-5`}>
+      {products.slice(0, compact ? 3 : 8).map((p) => (
+        <ProductCard key={p.id} product={p} />
       ))}
     </div>
   );
 }
 
-function EmptyProducts() {
+function CollectionBanner({
+  eyebrow, title, copy, image, ctaSearch, flip, muted, children,
+}: {
+  eyebrow: string; title: string; copy: string; image: string;
+  ctaSearch: string; flip?: boolean; muted?: boolean; children: React.ReactNode;
+}) {
   return (
-    <div className="rounded-2xl border border-dashed border-border p-10 text-center">
-      <h3 className="text-lg font-semibold">No products found</h3>
-      <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-        Your Shopify store is connected but no products are loading yet. Tell me what to add — name, price, category — and I'll create them for you.
-      </p>
-    </div>
+    <section className={muted ? "bg-surface" : ""}>
+      <div className="container-page py-16 md:py-20">
+        <div className={`grid lg:grid-cols-2 gap-10 items-center mb-10 ${flip ? "lg:[&>*:first-child]:order-2" : ""}`}>
+          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
+            <img src={image} alt={title} className="absolute inset-0 h-full w-full object-cover" />
+          </div>
+          <div>
+            <span className="text-xs uppercase tracking-[0.2em] font-semibold text-muted-foreground">{eyebrow}</span>
+            <h2 className="text-display text-3xl md:text-5xl mt-3">{title}</h2>
+            <p className="mt-4 text-muted-foreground leading-relaxed max-w-md">{copy}</p>
+            <Link to="/search" search={{ q: ctaSearch }} className="mt-6 inline-block">
+              <Button size="lg" className="rounded-full">Shop the collection</Button>
+            </Link>
+          </div>
+        </div>
+        {children}
+      </div>
+    </section>
   );
 }

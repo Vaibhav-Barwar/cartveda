@@ -7,7 +7,7 @@ export const testimonials: Testimonial[] = [
 ];
 
 export const faqs: FAQ[] = [
-  { id: "f1", question: "Where do you ship?",                a: undefined as any, answer: "We ship across India with 2–5 day delivery to all major cities and 4–7 days to remote pincodes." },
+  { id: "f1", question: "Where do you ship?",                answer: "We ship across India with 2–5 day delivery to all major cities and 4–7 days to remote pincodes." },
   { id: "f2", question: "What's your return policy?",        answer: "Unused products can be returned within 7 days of delivery for a full refund — no questions asked." },
   { id: "f3", question: "Are these beginner-friendly?",      answer: "Every product is curated for both beginners and seasoned athletes. Each listing includes setup notes." },
   { id: "f4", question: "Do you offer bundles?",             answer: "Yes — bundles combine top-rated essentials at up to 30% off the individual prices." },

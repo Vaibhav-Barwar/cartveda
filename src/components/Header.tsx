@@ -1,25 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Search, Heart, User, ShoppingBag, Menu, X, Dumbbell } from "lucide-react";
+import { Search, Heart, User, ShoppingBag, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCartStore } from "@/stores/cartStore";
-import { useWishlist } from "@/hooks/useWishlist";
+import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
+import { categories } from "@/data/categories";
 import { cn } from "@/lib/utils";
-
-const categories = [
-  { label: "Resistance Bands", q: "resistance" },
-  { label: "Yoga Mats", q: "yoga" },
-  { label: "Skipping Ropes", q: "skipping" },
-  { label: "Gym Gloves", q: "gloves" },
-  { label: "Ab Rollers", q: "ab roller" },
-  { label: "Shaker Bottles", q: "shaker" },
-  { label: "Bundles", q: "bundle" },
-];
 
 export function Header() {
   const totalItems = useCartStore((s) => s.items.reduce((a, b) => a + b.quantity, 0));
   const setOpen = useCartStore((s) => s.setOpen);
-  const wishCount = useWishlist((s) => s.ids.length);
+  const wishCount = useWishlistStore((s) => s.ids.length);
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
@@ -27,7 +18,7 @@ export function Header() {
   const path = useRouterState({ select: (r) => r.location.pathname });
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 4);
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
@@ -44,44 +35,39 @@ export function Header() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 transition-all border-b",
-        scrolled ? "bg-background/85 backdrop-blur border-border" : "bg-background border-transparent"
+        "sticky top-0 z-50 transition-all bg-background",
+        scrolled ? "border-b border-border" : "border-b border-transparent",
       )}
     >
-      <div className="container-page flex items-center gap-3 md:gap-6 h-16">
-        <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
-          <div className="relative h-9 w-9 rounded-xl bg-primary text-primary-foreground grid place-items-center shadow-[0_0_20px_-4px_color-mix(in_oklab,var(--color-primary)_70%,transparent)] transition-transform group-hover:scale-105">
-            <Dumbbell className="h-5 w-5" strokeWidth={2.5} />
-          </div>
-          <span className="font-display text-xl font-extrabold tracking-tight">
-            Cart<span className="text-primary">veda</span>
-          </span>
+      <div className="container-page flex items-center gap-3 md:gap-8 h-16">
+        <Link to="/" className="flex items-center gap-2 shrink-0">
+          <span className="font-display text-xl font-bold tracking-tight">CARTVEDA</span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1 text-sm">
-          <Link to="/products" className="px-3 py-2 rounded-md hover:bg-surface text-muted-foreground hover:text-foreground">
+          <Link to="/products" className="px-3 py-2 rounded-md hover:bg-surface font-medium">
             Shop All
           </Link>
           {categories.slice(0, 4).map((c) => (
             <Link
-              key={c.label}
+              key={c.slug}
               to="/search"
-              search={{ q: c.q }}
+              search={{ q: c.name.toLowerCase() }}
               className="px-3 py-2 rounded-md hover:bg-surface text-muted-foreground hover:text-foreground"
             >
-              {c.label}
+              {c.name}
             </Link>
           ))}
         </nav>
 
-        <form onSubmit={submitSearch} className="hidden md:flex flex-1 max-w-md ml-auto">
+        <form onSubmit={submitSearch} className="hidden md:flex flex-1 max-w-sm ml-auto">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search bands, mats, shakers…"
-              className="w-full h-10 pl-10 pr-3 rounded-full bg-surface border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/60"
+              placeholder="Search products"
+              className="w-full h-10 pl-10 pr-3 rounded-full bg-surface border border-transparent text-sm placeholder:text-muted-foreground focus:outline-none focus:border-foreground/30"
             />
           </div>
         </form>
@@ -97,7 +83,7 @@ export function Header() {
               <Heart className="h-5 w-5" />
             </Button>
             {wishCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold grid place-items-center">
+              <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-foreground text-background text-[10px] font-semibold grid place-items-center">
                 {wishCount}
               </span>
             )}
@@ -110,7 +96,7 @@ export function Header() {
           >
             <ShoppingBag className="h-5 w-5" />
             {totalItems > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold grid place-items-center">
+              <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-foreground text-background text-[10px] font-semibold grid place-items-center">
                 {totalItems}
               </span>
             )}
@@ -135,8 +121,8 @@ export function Header() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search fitness essentials…"
-              className="w-full h-10 pl-10 pr-3 rounded-full bg-surface border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/60"
+              placeholder="Search products"
+              className="w-full h-10 pl-10 pr-3 rounded-full bg-surface border border-transparent text-sm placeholder:text-muted-foreground focus:outline-none focus:border-foreground/30"
             />
           </div>
         </form>
@@ -145,10 +131,10 @@ export function Header() {
       {mobile && (
         <div className="lg:hidden border-t border-border bg-background">
           <nav className="container-page py-3 grid gap-1 text-sm">
-            <Link to="/products" className="px-3 py-2.5 rounded-md hover:bg-surface">Shop All</Link>
+            <Link to="/products" className="px-3 py-2.5 rounded-md hover:bg-surface font-medium">Shop All</Link>
             {categories.map((c) => (
-              <Link key={c.label} to="/search" search={{ q: c.q }} className="px-3 py-2.5 rounded-md hover:bg-surface text-muted-foreground">
-                {c.label}
+              <Link key={c.slug} to="/search" search={{ q: c.name.toLowerCase() }} className="px-3 py-2.5 rounded-md hover:bg-surface text-muted-foreground">
+                {c.name}
               </Link>
             ))}
             <Link to="/account" className="px-3 py-2.5 rounded-md hover:bg-surface">Account</Link>

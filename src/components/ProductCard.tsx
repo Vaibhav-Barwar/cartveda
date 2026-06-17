@@ -29,9 +29,9 @@ export function ProductCard({ product }: { product: Product }) {
     <Link
       to="/product/$handle"
       params={{ handle: product.slug }}
-      className="group flex flex-col rounded-xl bg-card overflow-hidden border border-border shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-0.5"
+      className="group flex flex-col rounded-[18px] bg-card overflow-hidden border border-border shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-0.5"
     >
-      <div className="relative aspect-square bg-surface overflow-hidden">
+      <div className="relative aspect-square bg-white overflow-hidden">
         <img
           src={product.images[0]}
           alt={product.name}

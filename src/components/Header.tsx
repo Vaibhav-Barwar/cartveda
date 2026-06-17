@@ -4,7 +4,6 @@ import { Search, Heart, User, ShoppingBag, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
-import { categories } from "@/data/categories";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -39,25 +38,18 @@ export function Header() {
         scrolled ? "border-b border-border" : "border-b border-transparent",
       )}
     >
-      <div className="container-page flex items-center gap-3 md:gap-8 h-16">
+      <div className="container-page flex items-center gap-6 md:gap-10 h-20">
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <span className="font-display text-xl font-bold tracking-tight">CARTVEDA</span>
+          <span className="font-display text-xl md:text-2xl font-bold tracking-tight">CARTVEDA</span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-1 text-sm">
+        <nav className="hidden lg:flex items-center gap-2 text-sm">
           <Link to="/products" className="px-3 py-2 rounded-md hover:bg-surface font-medium">
             Shop All
           </Link>
-          {categories.slice(0, 4).map((c) => (
-            <Link
-              key={c.slug}
-              to="/search"
-              search={{ q: c.name.toLowerCase() }}
-              className="px-3 py-2 rounded-md hover:bg-surface text-muted-foreground hover:text-foreground"
-            >
-              {c.name}
-            </Link>
-          ))}
+          <Link to="/contact" className="px-3 py-2 rounded-md hover:bg-surface font-medium">
+            Contact Us
+          </Link>
         </nav>
 
         <form onSubmit={submitSearch} className="hidden md:flex flex-1 max-w-sm ml-auto">
@@ -132,11 +124,7 @@ export function Header() {
         <div className="lg:hidden border-t border-border bg-background">
           <nav className="container-page py-3 grid gap-1 text-sm">
             <Link to="/products" className="px-3 py-2.5 rounded-md hover:bg-surface font-medium">Shop All</Link>
-            {categories.map((c) => (
-              <Link key={c.slug} to="/search" search={{ q: c.name.toLowerCase() }} className="px-3 py-2.5 rounded-md hover:bg-surface text-muted-foreground">
-                {c.name}
-              </Link>
-            ))}
+            <Link to="/contact" className="px-3 py-2.5 rounded-md hover:bg-surface font-medium">Contact Us</Link>
             <Link to="/account" className="px-3 py-2.5 rounded-md hover:bg-surface">Account</Link>
             <Link to="/wishlist" className="px-3 py-2.5 rounded-md hover:bg-surface">Wishlist</Link>
           </nav>
